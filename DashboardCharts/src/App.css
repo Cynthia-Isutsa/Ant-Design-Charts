@@ -15,12 +15,25 @@
 }
 
 .footer {
+  height: 50px;
+ display: flex;
+ justify-content: space-evenly;
+ align-items: center;
+ padding: 4px 20px 4px 12px;
+ border-top: 1px solid rgba(0,0,0,0.15);
 
+}
+
+.sidemenu_content{
+  display: flex;
+  flex: 1;
 }
 
 .sidemenu {
 
 }
+
+
 
 .content {
 

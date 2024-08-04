@@ -9,7 +9,7 @@ const App = () => {
   return (
     <div className="App">
       <AppHeader />
-      <Space>
+      <Space className="sidemenu_content">
       <PageContent />
       <SideMenu />
       </Space>
