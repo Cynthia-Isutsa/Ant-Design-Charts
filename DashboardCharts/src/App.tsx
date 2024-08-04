@@ -10,8 +10,8 @@ const App = () => {
     <div className="App">
       <AppHeader />
       <Space className="sidemenu_content">
-      <PageContent />
       <SideMenu />
+      <PageContent />
       </Space>
       <AppFooter />
       </div>

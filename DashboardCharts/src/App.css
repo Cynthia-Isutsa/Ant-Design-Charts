@@ -27,6 +27,8 @@
 .sidemenu_content{
   display: flex;
   flex: 1;
+  justify-content: flex-start;
+  align-items: flex-start;
 }
 
 .sidemenu {
