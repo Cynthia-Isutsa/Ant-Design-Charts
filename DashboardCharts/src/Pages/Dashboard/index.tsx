@@ -1,21 +1,44 @@
 import {
   DollarCircleOutlined,
-  EllipsisOutlined,
+  //EllipsisOutlined,
   ShoppingCartOutlined,
   ShoppingOutlined,
   UserOutlined,
 } from "@ant-design/icons";
-import { PageContainer, ProTable, StatisticCard } from "@ant-design/pro-components";
+import { PageContainer, ProTable, 
+  //StatisticCard
+ } from "@ant-design/pro-components";
 import { Card, Divider, Space, Statistic, Typography } from "antd";
 import { useEffect, useState } from "react";
-import { getRecentOrders } from "../API";
-import RcResizeObserver from 'rc-resize-observer';
+import { getRecentOrders, getRevenue } from "../API";
+//import RcResizeObserver from 'rc-resize-observer';
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  BarElement, 
+  Title,
+  Tooltip,
+  Legend,
+} from 'chart.js'
+import DashboardChart from "./components/DashboardChart";
+
+
+
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Title,
+  Tooltip,
+  Legend,
+)
 
 
 const index = () => {
  const [dataSource, setDataSource] = useState<any>([])
  const [loading, setLoading] = useState<any>(false)
- const [responsive, setResponsive] = useState(false);
+ //const [responsive, setResponsive] = useState(false);
 
  useEffect(() => {
   setLoading(true)
@@ -23,6 +46,25 @@ const index = () => {
     console.log({res})
     setDataSource(res?.products)
     setLoading(false)
+  })
+ }, [])
+
+ useEffect(() => {
+  //setLoading(true)   
+  getRevenue().then(res =>{
+    console.log({res})
+    const labels = res?.carts?.map((item: any)=> {
+        return `user -${item?.userId}`
+    })
+
+    const data = res?.carts?.map((disc: any) =>{
+      return disc?.discountedTotal
+
+    })
+
+    console.log({labels, data})
+
+   
   })
  }, [])
 
@@ -133,7 +175,7 @@ const index = () => {
       }
       style={{ width: 268 }}
     /> */}
-     <StatisticCard
+     {/* <StatisticCard
       title="Example of Antd chart"
       tooltip="Sales"
       style={{ maxWidth: 480 }}
@@ -192,7 +234,7 @@ const index = () => {
         />
       </StatisticCard.Group>
     </RcResizeObserver>
-    
+     */}
         <Divider />
         <Space direction="vertical">
           <Typography.Title level={2}>Recent Orders</Typography.Title>
@@ -254,12 +296,12 @@ const index = () => {
             ]}
             pagination={false}
           />
+          <DashboardChart />
         </Space>
       </PageContainer>
     </div>
   );
 };
-
 
 
 export default index;
