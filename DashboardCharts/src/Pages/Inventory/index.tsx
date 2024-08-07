@@ -1,4 +1,3 @@
-import React from 'react';
 import { PageContainer, ProFormList, ProFormSelect } from "@ant-design/pro-components";
 import { Button } from "antd";
 

@@ -5,9 +5,11 @@ import {
   ShoppingOutlined,
   UserOutlined,
 } from "@ant-design/icons";
-import { PageContainer, ProTable, 
+import {
+  PageContainer,
+  ProTable,
   //StatisticCard
- } from "@ant-design/pro-components";
+} from "@ant-design/pro-components";
 import { Card, Divider, Space, Statistic, Typography } from "antd";
 import { useEffect, useState } from "react";
 import { getRecentOrders, getRevenue } from "../API";
@@ -16,14 +18,13 @@ import {
   Chart as ChartJS,
   CategoryScale,
   LinearScale,
-  BarElement, 
+  BarElement,
   Title,
   Tooltip,
   Legend,
-} from 'chart.js'
-import DashboardChart from "./components/DashboardChart";
-
-
+} from "chart.js";
+//import DashboardChart from "./components/DashboardChart";
+import { Bar } from "react-chartjs-2";
 
 ChartJS.register(
   CategoryScale,
@@ -31,43 +32,65 @@ ChartJS.register(
   BarElement,
   Title,
   Tooltip,
-  Legend,
-)
-
+  Legend
+);
 
 const index = () => {
- const [dataSource, setDataSource] = useState<any>([])
- const [loading, setLoading] = useState<any>(false)
- //const [responsive, setResponsive] = useState(false);
+  const [dataSource, setDataSource] = useState<any>([]);
+  const [revenueData, setRevenueData] = useState<any>({
+    labels: [],
+    datasets: [],
+  });
+  const [loading, setLoading] = useState<any>(false);
+  //const [responsive, setResponsive] = useState(false);
 
- useEffect(() => {
-  setLoading(true)
-  getRecentOrders().then(res =>{
-    console.log({res})
-    setDataSource(res?.products)
-    setLoading(false)
-  })
- }, [])
+  useEffect(() => {
+    setLoading(true);
+    getRecentOrders().then((res) => {
+      console.log({ res });
+      setDataSource(res?.products);
+      setLoading(false);
+    });
+  }, []);
 
- useEffect(() => {
-  //setLoading(true)   
-  getRevenue().then(res =>{
-    console.log({res})
-    const labels = res?.carts?.map((item: any)=> {
-        return `user -${item?.userId}`
-    })
+  useEffect(() => {
+    //setLoading(true)
+    getRevenue().then((res) => {
+      console.log({ res });
+      const labels = res?.carts?.map((item: any) => {
+        return `user -${item?.userId}`;
+      });
 
-    const data = res?.carts?.map((disc: any) =>{
-      return disc?.discountedTotal
+      const data = res?.carts?.map((disc: any) => {
+        return disc?.discountedTotal;
+      });
 
-    })
+      const dataSource: any = {
+        labels,
+        datasets: [
+          {
+            label: labels,
+            data: data,
+            backgroundColor: "rgba(255,0,0, 1)",
+          },
+        ],
+      };
+      setRevenueData(dataSource);
+    });
+  }, []);
 
-    console.log({labels, data})
-
-   
-  })
- }, [])
-
+  const options: any = {
+    responsive: true,
+    plugins: {
+      legend: {
+        position: "bottom",
+      },
+      title: {
+        display: true,
+        text: "Orders Revenue",
+      },
+    },
+  };
 
   return (
     <div>
@@ -86,7 +109,6 @@ const index = () => {
           ),
         }}
       >
-        
         <Space direction="horizontal">
           <Card>
             <Space direction="horizontal">
@@ -175,7 +197,7 @@ const index = () => {
       }
       style={{ width: 268 }}
     /> */}
-     {/* <StatisticCard
+        {/* <StatisticCard
       title="Example of Antd chart"
       tooltip="Sales"
       style={{ maxWidth: 480 }}
@@ -239,17 +261,16 @@ const index = () => {
         <Space direction="vertical">
           <Typography.Title level={2}>Recent Orders</Typography.Title>
           <ProTable
-          search={false}
-          dataSource={dataSource}
-          options={false}
-          loading={loading}
+            search={false}
+            dataSource={dataSource}
+            options={false}
+            loading={loading}
             columns={[
               {
                 title: "Id",
                 dataIndex: "id",
                 key: "id",
                 width: 150,
-                
               },
               {
                 title: "Product",
@@ -264,8 +285,8 @@ const index = () => {
                 width: 150,
                 valueType: {
                   type: "money",
-                  moneySymbol: false
-                }
+                  moneySymbol: false,
+                },
               },
               {
                 title: "Quantity",
@@ -280,8 +301,8 @@ const index = () => {
                 width: 150,
                 valueType: {
                   type: "money",
-                  moneySymbol: false
-                }
+                  moneySymbol: false,
+                },
               },
               {
                 title: "Discounted Total",
@@ -290,18 +311,20 @@ const index = () => {
                 width: 150,
                 valueType: {
                   type: "money",
-                  moneySymbol: false
-                }
+                  moneySymbol: false,
+                },
               },
             ]}
             pagination={false}
           />
-          <DashboardChart />
+          {/* <DashboardChart /> */}
+          <Card style={{width: 500, height: 350}}>
+          <Bar options={options} data={revenueData} />;
+          </Card>
         </Space>
       </PageContainer>
     </div>
   );
 };
-
 
 export default index;
