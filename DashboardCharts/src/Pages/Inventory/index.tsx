@@ -1,68 +1,113 @@
-import { PageContainer, ProFormList, ProFormSelect } from "@ant-design/pro-components";
-import { Button } from "antd";
+import { useEffect, useState } from "react"
+import { getProducts } from "../API";
+import { Avatar, Card, Rate, Space, Typography } from "antd";
+import { PageContainer, ProTable } from "@ant-design/pro-components";
 
-const Index = () => {
+
+const index = () => {
+const [loading, setLoading] = useState<boolean>(false)
+const [dataSource, setDataSource] = useState<any>([])
+
+useEffect(() => {
+  setLoading(true);
+  getProducts ().then((res) => {
+    console.log({ res });
+    setDataSource(res?.products);
+    setLoading(false);
+  });
+}, []);
+
+
   return (
     <PageContainer
-      content="Welcome to the ProLayout component"
-      tabList={[
+    breadcrumbRender={false}
+    fixedHeader
+    header={{
+      title: (
+        <div style={{ display: "flex", justifyContent: "center" }}>
+          <Card bordered={false}>
+            <Typography.Title level={4} style={{ color: "blue" }}>
+             Inventory Data
+            </Typography.Title>
+          </Card>
+        </div>
+      ),
+    }}
+  >
+    <Space direction='vertical'>
+    <Typography.Title level={2}>Inventory Updates</Typography.Title>
+      <ProTable 
+      search={false}
+      dataSource={dataSource} 
+      loading={loading}
+      pagination={false}
+      columns={[
         {
-          tab: 'base information',
-          key: 'base',
+          title: "Title", 
+          dataIndex: "title",
+          key: "title",
+          width: 300
         },
         {
-          tab: 'details',
-          key: 'info',
+          title: "Price", 
+          dataIndex: "price",
+          key: "price",
+          width: 200,
+          valueType: {
+            type: "money",
+            moneySymbol: false
+          }
         },
-      ]}
-      extra={[
-        <Button key="3">Operation</Button>,
-        <Button key="2">Operation</Button>,
-        <Button key="1" type="primary">
-          Primary Action
-        </Button>,
-      ]}
-      footer={[
-        <Button key="rest">Reset</Button>,
-        <Button key="submit" type="primary">
-          Submit
-        </Button>,
-      ]}
-    >
-      <ProFormList
-        name="users"
-        initialValue={[
-          {
-            useMode: 'chapter',
-          },
-        ]}
-        creatorButtonProps={{
-          position: 'top',
-          creatorButtonText: 'Building a line',
-        }}
-        creatorRecord={{
-          useMode: 'none',
-        }}
-      >
-        <ProFormSelect
-          key="useMode"
-          options={[
-            {
-              value: 'chapter',
-              label: 'Valid after stamping',
-            },
-            {
-              value: 'none',
-              label: 'Not effective',
-            },
-          ]}
-          width="md"
-          name="useMode"
-          label="Contract agreement effective method"
-        />
-      </ProFormList>
-    </PageContainer>
-  );
-};
+       
+        {
+          title: "Stock", 
+          dataIndex: "stock",
+          key: "stock",
+          width: 200
+        },
+       
+        {
+          title: "Brand", 
+          dataIndex: "brand",
+          key: "brand",
+          width: 200
+        },
+        {
+          title: "Category", 
+          dataIndex: "category",
+          key: "category",
+          width: 200
+        },
+        {
+          title: "Thumbnail", 
+          dataIndex: "thumbnail",
+          key: "thumbnail",
+          width: 200,
+          //ellipsis: true,
+          render: (link)=> {
+            return (
+              <Avatar src={link} />
+            )
+          }
+        },
+        {
+          title: "Rating", 
+          dataIndex: "rating",
+          key: "rating",
+          width: 200,
+          render: (rate: any) =>{
+            return (
+              <Rate value={rate} allowHalf disabled/>
+  )
+          }
 
-export default Index;
+        },
+      ]}
+      />
+     
+    </Space>
+    </PageContainer>
+  )
+}
+
+export default index
